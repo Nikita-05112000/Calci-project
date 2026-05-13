@@ -1,0 +1,253 @@
+# Scientific Calculator Using Your Existing UI
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator</title>
+
+  <style>
+
+    body{
+      margin-top: 0;
+      background-color: #000;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .outer{
+      margin: 0 auto;
+      min-height: 650px;
+      width: 320px;
+      border: 4px solid rgb(255, 255, 255);
+      box-shadow: 0 0 30px rgba(174, 42, 174, 0.832);
+      /* background: linear-gradient(to bottom,rgb(245, 144, 161),rgb(167, 0, 167)); */
+      background-image: url(https://assets.cntraveller.in/photos/60b9f49adb1b6a2d639cedaa/16:9/w_1600,h_900,c_limit/Japan-Cherry-Blossoms%252C-123rf.jpg);
+      background-position:center;
+      padding: 15px;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .screen{
+      text-align: right;
+      padding-right: 10px;
+      letter-spacing: 2px;
+      padding-bottom: 20px;
+      font-size: 28px;
+      height: 130px;
+      border-radius: 15px;
+      background-color: #fffafa;
+      width: 100%;
+      box-shadow: 0 0 10px rgb(247, 148, 237);
+      border: none;
+      outline: none;
+    }
+
+    .btn{
+      margin: 5px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: none;
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+      font-weight: bolder;
+      font-size: 16px;
+      background: linear-gradient(rgb(255, 255, 255),rgb(177, 173, 173));
+      cursor: pointer;
+    }
+
+    .btn:hover{
+      box-shadow: 0 0 30px rgb(146, 142, 146);
+    }
+
+    .btn:active{
+      transform: scale(1.05);
+    }
+    .btn-container{
+      padding-left: 10px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 8px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="outer">
+
+    <input type="text" id="display" class="screen" readonly>
+
+    <div class="btn-container">
+
+      <!-- Row 1 -->
+      <button class="btn" onclick="clearDisplay()">AC</button>
+      <button class="btn" onclick="appendValue('(')">(</button>
+      <button class="btn" onclick="appendValue(')')">)</button>
+      <button class="btn" onclick="appendValue('/')">/</button>
+
+      <!-- Row 2 -->
+      <button class="btn" onclick="scientificFunction('sin')">sin</button>
+      <button class="btn" onclick="scientificFunction('cos')">cos</button>
+      <button class="btn" onclick="scientificFunction('tan')">tan</button>
+      <button class="btn" onclick="scientificFunction('sqrt')">√</button>
+
+      <!-- Row 3 -->
+      <button class="btn" onclick="appendValue('7')">7</button>
+      <button class="btn" onclick="appendValue('8')">8</button>
+      <button class="btn" onclick="appendValue('9')">9</button>
+      <button class="btn" onclick="appendValue('*')">*</button>
+
+      <!-- Row 4 -->
+      <button class="btn" onclick="appendValue('4')">4</button>
+      <button class="btn" onclick="appendValue('5')">5</button>
+      <button class="btn" onclick="appendValue('6')">6</button>
+      <button class="btn" onclick="appendValue('-')">-</button>
+
+      <!-- Row 5 -->
+      <button class="btn" onclick="appendValue('1')">1</button>
+      <button class="btn" onclick="appendValue('2')">2</button>
+      <button class="btn" onclick="appendValue('3')">3</button>
+      <button class="btn" onclick="appendValue('+')">+</button>
+
+      <!-- Row 6 -->
+      <button class="btn" onclick="appendValue('00')">00</button>
+      <button class="btn" onclick="appendValue('0')">0</button>
+      <button class="btn" onclick="appendValue('.')">.</button>
+      <button class="btn" onclick="calculate()">=</button>
+
+      <!-- Row 7 -->
+      <button class="btn" onclick="appendValue('%')">%</button>
+      <button class="btn" onclick="appendValue('3.14')">π</button>
+      <button class="btn" onclick="appendValue('2.718')">e</button>
+      <button class="btn" onclick="backspace()">⌫</button>
+
+    </div>
+  </div>
+
+  <script>
+
+    let currentDisplay = '';
+
+const display = document.getElementById('display');
+
+function updateDisplay(){
+  display.value = currentDisplay;
+}
+
+function appendValue(value){
+  currentDisplay += value;
+  updateDisplay();
+}
+
+function clearDisplay(){
+  currentDisplay = '';
+  updateDisplay();
+}
+
+function backspace(){
+  currentDisplay = currentDisplay.slice(0,-1);
+  updateDisplay();
+}
+
+function calculate(){
+
+  try{
+    currentDisplay = eval(currentDisplay).toString();
+    updateDisplay();
+  }
+
+  catch(error){
+    currentDisplay = 'Error';
+    updateDisplay();
+  }
+}
+
+function scientificFunction(func){
+
+  try{
+
+    let value = eval(currentDisplay);
+
+    if(func === 'sin'){
+      currentDisplay = Math.sin(value * Math.PI / 180).toString();
+    }
+
+    else if(func === 'cos'){
+      currentDisplay = Math.cos(value * Math.PI / 180).toString();
+    }
+
+    else if(func === 'tan'){
+      currentDisplay = Math.tan(value * Math.PI / 180).toString();
+    }
+
+    else if(func === 'sqrt'){
+      currentDisplay = Math.sqrt(value).toString();
+    }
+
+    updateDisplay();
+
+  }
+
+  catch(error){
+
+    currentDisplay = 'Error';
+    updateDisplay();
+
+  }
+}
+
+document.addEventListener('keydown',(event)=>{
+
+  const key = event.key;
+
+  if(
+    (key >= '0' && key <= '9') ||
+    key === '+' ||
+    key === '-' ||
+    key === '*' ||
+    key === '/' ||
+    key === '.' ||
+    key === '%'
+  ){
+    appendValue(key);
+  }
+
+  else if(key === 'Enter'){
+    calculate();
+  }
+
+  else if(key === 'Backspace'){
+    backspace();
+  }
+
+  else if(key === 'Escape'){
+    clearDisplay();
+  }
+
+});
+
+  </script>
+
+</body>
+</html>
+<!-- Added Features
+
+* Scientific Functions
+  * sin()
+  * cos()
+  * tan()
+  * sqrt()
+* Keyboard Support
+* Backspace Button
+* π and e Constants
+* Error Handlig
+* Improved Layout -->
